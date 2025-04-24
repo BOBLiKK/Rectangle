@@ -1,8 +1,9 @@
 package ehu.java.validator;
 
+import ehu.java.entity.Point;
+
+import java.util.List;
+
 public interface RectangleValidator {
-
-    public boolean isValidCoordinateLine(String coordinatesLine);
-
-    public boolean isValidRectangle(double[] coordinates);
+    boolean isValidRectangle(List<Point> points);
 }

@@ -1,6 +1,54 @@
 package ehu.java.service.impl;
 
+import ehu.java.entity.Point;
 import ehu.java.service.PointService;
 
 public class PointServiceImpl implements PointService {
+    @Override
+    public double calculateDistance(Point firstPoint, Point secondPoint) {
+        double distanceX = secondPoint.getX() - firstPoint.getX();
+        double distanceY = secondPoint.getY() - firstPoint.getY();
+        return Math.sqrt(distanceX * distanceX + distanceY * distanceY);
+    }
+
+    @Override
+    public double calculateAngle(Point firstPoint, Point secondPoint, Point thirdPoint) {
+
+        //todo погрешности
+
+        // Вектор A: secondPoint -> firstPoint
+        double ax = firstPoint.getX() - secondPoint.getX();
+        double ay = firstPoint.getY() - secondPoint.getY();
+
+        // Вектор B: secondPoint -> thirdPoint
+        double bx = thirdPoint.getX() - secondPoint.getX();
+        double by = thirdPoint.getY() - secondPoint.getY();
+
+        // Скалярное произведение и длины векторов
+        double dotProduct = ax * bx + ay * by;
+        double magnitudeA = Math.sqrt(ax * ax + ay * ay);
+        double magnitudeB = Math.sqrt(bx * bx + by * by);
+
+        if (magnitudeA == 0 || magnitudeB == 0) {
+            return 0; // угол не определён
+        }
+
+        double cosTheta = dotProduct / (magnitudeA * magnitudeB);
+        // Ограничиваем из-за погрешностей
+        cosTheta = Math.max(-1.0, Math.min(1.0, cosTheta));
+
+        return Math.toDegrees(Math.acos(cosTheta));
+    }
+
+
+    //todo погрешности в return типа return Math.abs(degrees - 90.0) < 1e-6;
+    //todo последовательность передачи параметров, тоже дичь слегка
+    //todo maybe should be in PointValidator
+
+    @Override
+    public boolean isRightAngle(Point firstPoint, Point secondPoint, Point thirdPoint) {
+        double angle = calculateAngle(firstPoint, secondPoint, thirdPoint);
+        double degrees = Math.toDegrees(angle);
+        return Math.abs(degrees - 90.0) == 0;
+    }
 }
