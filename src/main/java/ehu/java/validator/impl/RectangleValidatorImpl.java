@@ -16,12 +16,6 @@ public class RectangleValidatorImpl implements RectangleValidator {
         this.pointService = new PointServiceImpl();
     }
 
-    /*
-    public RectangleValidatorImpl(PointService pointService) {
-        this.pointService = pointService;
-    }
-
-     */
 
     @Override
     public boolean isValidRectangle(List<Point> points) {
@@ -54,5 +48,12 @@ public class RectangleValidatorImpl implements RectangleValidator {
         boolean equalDiagonals = Math.abs(diag1 - diag2) < 1e-6;
 
         return equalSides && equalDiagonals;
+    }
+
+    @Override
+    public boolean isRightAngle(Point firstPoint, Point secondPoint, Point thirdPoint) {
+        double angle = pointService.calculateAngle(firstPoint, secondPoint, thirdPoint);
+        double degrees = Math.toDegrees(angle);
+        return Math.abs(degrees - 90.0) == 0;
     }
 }

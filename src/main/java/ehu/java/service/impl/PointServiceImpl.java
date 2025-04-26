@@ -1,7 +1,12 @@
 package ehu.java.service.impl;
 
 import ehu.java.entity.Point;
+import ehu.java.exception.ServiceException;
 import ehu.java.service.PointService;
+
+import java.util.Comparator;
+import java.util.List;
+import java.util.stream.Collectors;
 
 public class PointServiceImpl implements PointService {
     @Override
@@ -41,14 +46,24 @@ public class PointServiceImpl implements PointService {
     }
 
 
-    //todo погрешности в return типа return Math.abs(degrees - 90.0) < 1e-6;
-    //todo последовательность передачи параметров, тоже дичь слегка
-    //todo maybe should be in PointValidator
 
     @Override
-    public boolean isRightAngle(Point firstPoint, Point secondPoint, Point thirdPoint) {
-        double angle = calculateAngle(firstPoint, secondPoint, thirdPoint);
-        double degrees = Math.toDegrees(angle);
-        return Math.abs(degrees - 90.0) == 0;
+    public List<Point> orderPoints(List<Point> points) {
+        // Найти нижнюю левую точку
+        Point basePoint = points.stream()
+                .min(Comparator.<Point>comparingDouble(Point::getY)
+                        .thenComparingDouble(Point::getX))
+                .orElseThrow(() -> new IllegalArgumentException("Cannot find base point"));
+
+        // Сортировать остальные по углу относительно basePoint
+        return points.stream()
+                .sorted((p1, p2) -> {
+                    if (p1.equals(basePoint)) return -1;
+                    if (p2.equals(basePoint)) return 1;
+                    double angle1 = Math.atan2(p1.getY() - basePoint.getY(), p1.getX() - basePoint.getX());
+                    double angle2 = Math.atan2(p2.getY() - basePoint.getY(), p2.getX() - basePoint.getX());
+                    return Double.compare(angle1, angle2);
+                })
+                .collect(Collectors.toList());
     }
 }

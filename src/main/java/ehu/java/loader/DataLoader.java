@@ -2,6 +2,7 @@ package ehu.java.loader;
 
 import ehu.java.entity.Point;
 import ehu.java.entity.Rectangle;
+import ehu.java.exception.DaoException;
 import ehu.java.factory.impl.FigureFactoryImpl;
 import ehu.java.validator.PointValidator;
 import ehu.java.validator.RectangleValidator;
@@ -24,13 +25,16 @@ public class DataLoader {
     private final RectangleValidator rectangleValidator = new RectangleValidatorImpl();
     private final FigureFactoryImpl figureFactory = new FigureFactoryImpl();
 
-    public List<Rectangle> loadRectangles() {
+
+
+    //todo this method should simply read file and return rows to service
+    //todo service would validate the data and create rectangles
+    public List<Rectangle> loadRectangles() throws DaoException {
         List<Rectangle> rectangles = new ArrayList<>();
 
         try (InputStream inputStream = getClass().getClassLoader().getResourceAsStream(FILE_PATH)) {
             if (inputStream == null) {
-                //todo maybe throw new Dao
-                throw new IOException("Файл не найден: " + FILE_PATH);
+                throw new IOException("File not found: " + FILE_PATH);
             }
 
             // Читаем строки, преобразуем InputStream в Stream<String>
@@ -38,7 +42,7 @@ public class DataLoader {
                     new java.io.InputStreamReader(inputStream, StandardCharsets.UTF_8)).lines()) {
 
                 //todo Часть данныx должна быть некорректной. Если встретилась некорректная строка, приложение должно
-                //переходить к следующей строке. Файлы не должны находиться вне каталогов.
+                //todo переходить к следующей строке. Файлы не должны находиться вне каталогов.
                 lines.forEach(line -> {
                     String cleaned = line.replaceAll("\\s+", "");
                     if (pointValidator.isValidCoordinatesLine(cleaned)) {
@@ -52,21 +56,20 @@ public class DataLoader {
                             }
                             if(rectangleValidator.isValidRectangle(points)) {
                                 //todo something with the name, it should either not exist either the names should be different
+                                logger.info("Points form rectangle: " + points);
+                                //todo sort points first
                                 rectangles.add(figureFactory.createRectangle("name_sample", points));
-
-                            }
-
-
+                            }else{
+                                logger.error("Points don't form rectangle: " + points);
+                        }
                     } else {
-                        //todo or info but will be with the same colour
                         logger.error("Incorrect line:" + line);
                     }
                 });
             }
-
         } catch (IOException e) {
-            //todo throw new Dao exception
             logger.error("Error reading file: " + e);
+            throw new DaoException(e);
         }
         return rectangles;
     }
