@@ -7,9 +7,9 @@ import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class FigureFactoryImpl implements FigureFactory {
+    private final AtomicInteger idGenerator = new AtomicInteger(1);
     @Override
     public Rectangle createRectangle(String name, List<Point> validatedCoordinates) {
-        AtomicInteger idGenerator = new AtomicInteger(1);
         int id = idGenerator.getAndIncrement();
         return new Rectangle(id, name, validatedCoordinates);
     }

@@ -1,7 +1,7 @@
 package ehu.java.service;
 
 import ehu.java.entity.Rectangle;
-
+import ehu.java.exception.ServiceException;
 import java.util.List;
 
 public interface RectangleService {
@@ -9,4 +9,5 @@ public interface RectangleService {
     double calculateArea(Rectangle rectangle);
     double defineSmallSide(Rectangle rectangle);
     double defineLargeSide(Rectangle rectangle);
+    List<Rectangle> createRectangles() throws ServiceException;
 }

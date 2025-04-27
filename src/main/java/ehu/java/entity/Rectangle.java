@@ -3,8 +3,8 @@ package ehu.java.entity;
 import java.util.List;
 
 public class Rectangle extends AbstractEntity {
-    private final int id;  // поле идентификатора
-    private final String name;  // если выберешь использовать имя, можно оставить id = -1
+    private final int id;
+    private final String name;
     private final List<Point> coordinates;
 
     public Rectangle(int id, String name, List<Point> validatedCoordinates) {
