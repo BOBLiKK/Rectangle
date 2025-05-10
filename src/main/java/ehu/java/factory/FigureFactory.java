@@ -5,7 +5,5 @@ import ehu.java.entity.Rectangle;
 import java.util.List;
 
 public interface FigureFactory {
-    Rectangle createRectangle(String name, List<Point> validatedCoordinates);
-    Rectangle createRectangle(int id, String name, List<Point> validatedCoordinates);
-
+    Rectangle createRectangle(List<Point> validatedCoordinates);
 }

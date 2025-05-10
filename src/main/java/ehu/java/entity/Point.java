@@ -30,14 +30,13 @@ public class Point extends AbstractEntity {
         if (this == obj) return true;
         if (obj == null || getClass() != obj.getClass()) return false;
         Point other = (Point) obj;
-        return Double.compare(x, other.x) == 0 &&
-                Double.compare(y, other.y) == 0;
+        return Double.compare(x, other.x) == 0 && Double.compare(y, other.y) == 0;
     }
 
     @Override
     public int hashCode() {
         long xBits = Double.doubleToLongBits(x);
         long yBits = Double.doubleToLongBits(y);
-        return (int)(xBits ^ (xBits >>> 32)) * 31 + (int)(yBits ^ (yBits >>> 32));
+        return (int) (xBits ^ (xBits >>> 32)) * 31 + (int) (yBits ^ (yBits >>> 32));
     }
 }

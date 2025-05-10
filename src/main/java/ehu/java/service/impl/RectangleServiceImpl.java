@@ -6,6 +6,8 @@ import ehu.java.exception.DaoException;
 import ehu.java.exception.ServiceException;
 import ehu.java.factory.impl.FigureFactoryImpl;
 import ehu.java.loader.DataLoader;
+import ehu.java.repository.impl.RectangleIdSpecificationImpl;
+import ehu.java.repository.impl.RectangleRepositoryImpl;
 import ehu.java.service.PointService;
 import ehu.java.service.RectangleService;
 import ehu.java.validator.impl.RectangleValidatorImpl;
@@ -61,7 +63,7 @@ public class RectangleServiceImpl implements RectangleService {
     }
 
     @Override
-    public List<Rectangle> createRectangles() throws ServiceException {
+    public List<Rectangle> createRectangles(RectangleRepositoryImpl repository) throws ServiceException {
         List<Rectangle> rectangles = new ArrayList<>();
         try{
             List<String> linesFromFile = dataLoader.loadDataFromFile();
@@ -69,8 +71,10 @@ public class RectangleServiceImpl implements RectangleService {
                 List<Point> points = pointService.createPoints(line);
                 if(points != null){
                     List<Double> distances = pointService.calculateAllDistances(points);
-                    if(rectangleValidator.isValidRectangle(distances)){
-                        rectangles.add(figureFactory.createRectangle("Rectangle " + rectangles.size(), points));
+                    if(rectangleValidator.isValidRectangle(distances, points)){
+                        Rectangle rectangle = figureFactory.createRectangle(points);
+                        rectangles.add(rectangle);
+                        repository.add(rectangle);
                     } else{
                         logger.error("Invalid rectangle: " + line);
                     }
@@ -81,4 +85,29 @@ public class RectangleServiceImpl implements RectangleService {
         }
         return rectangles;
     }
+
+    @Override
+    public boolean updateRectangleCoordinates(int rectangleId, List<Point> newCoordinates, RectangleRepositoryImpl repository) {
+        RectangleIdSpecificationImpl specification = new RectangleIdSpecificationImpl(rectangleId);
+        List<Rectangle> foundRectangles = repository.query(specification);
+
+        if (foundRectangles.isEmpty()) {
+            logger.error("Rectangle with ID " + rectangleId + " not found.");
+            return false;
+        }
+
+        Rectangle rectangleToUpdate = foundRectangles.get(0);
+
+        List<Double> distances = pointService.calculateAllDistances(newCoordinates);
+        if (!rectangleValidator.isValidRectangle(distances, newCoordinates)) {
+            logger.error("Invalid new coordinates for rectangle ID " + rectangleId + ": " + newCoordinates);
+            return false;
+        }
+
+        rectangleToUpdate.setCoordinates(newCoordinates);
+        rectangleToUpdate.notifyObservers();
+        logger.info("Updated coordinates for rectangle ID " + rectangleId + ": " + newCoordinates);
+        return true;
+    }
+
 }

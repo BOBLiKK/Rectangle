@@ -5,7 +5,7 @@ import ehu.java.validator.PointValidator;
 public class PointValidatorImpl implements PointValidator {
     @Override
     public boolean isValidCoordinatesLine(String cleanedInput) {
-        // Должно быть ровно 8 чисел, разделённых точками с запятой
+        // Should be 8 numbers separated by ;
         String regex = "(-?\\d+(\\.\\d+)?;){3}-?\\d+(\\.\\d+)?";
         return cleanedInput.matches(regex);
     }

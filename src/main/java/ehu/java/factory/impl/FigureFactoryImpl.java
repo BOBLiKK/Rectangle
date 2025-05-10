@@ -3,19 +3,20 @@ package ehu.java.factory.impl;
 import ehu.java.entity.Point;
 import ehu.java.entity.Rectangle;
 import ehu.java.factory.FigureFactory;
+import ehu.java.state.impl.ValidState;
+import ehu.java.util.IDGenerator;
+import ehu.java.warehouse.Warehouse;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicInteger;
+
 
 public class FigureFactoryImpl implements FigureFactory {
-    private final AtomicInteger idGenerator = new AtomicInteger(1);
-    @Override
-    public Rectangle createRectangle(String name, List<Point> validatedCoordinates) {
-        int id = idGenerator.getAndIncrement();
-        return new Rectangle(id, name, validatedCoordinates);
-    }
 
     @Override
-    public Rectangle createRectangle(int id, String name, List<Point> validatedCoordinates) {
-        return new Rectangle(id, name, validatedCoordinates);
+    public Rectangle createRectangle(List<Point> validatedCoordinates) {
+        int id = IDGenerator.getInstance().generateId();
+        Rectangle rectangle = new Rectangle(id, validatedCoordinates);
+        rectangle.setState(new ValidState());
+        Warehouse.getInstance().addRectangle(rectangle);
+        return rectangle;
     }
 }

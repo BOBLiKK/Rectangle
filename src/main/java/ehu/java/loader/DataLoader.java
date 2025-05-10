@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Stream;
 
+
 public class DataLoader {
     private static final Logger logger = LogManager.getLogger(DataLoader.class);
     private static final String FILE_PATH = "rectangles.txt";
