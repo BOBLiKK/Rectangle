@@ -1,6 +1,7 @@
 package ehu.java.service;
 
 import ehu.java.entity.Point;
+import ehu.java.exception.ServiceException;
 import java.util.List;
 
 public interface PointService {

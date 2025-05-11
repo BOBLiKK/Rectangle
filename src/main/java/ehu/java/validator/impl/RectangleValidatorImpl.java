@@ -13,6 +13,10 @@ public class RectangleValidatorImpl implements RectangleValidator {
         if (distances.size() != 6 || points.size() != 4) {
             return false;
         }
+        boolean allPointsEqual = points.stream().distinct().count() == 1;
+        if (allPointsEqual) {
+            return false;
+        }
 
         distances.sort(Double::compareTo);
         double side1 = distances.get(0);

@@ -19,7 +19,7 @@ public class DataLoader {
         List<String> extractedLines = new ArrayList<>();
         try (InputStream inputStream = getClass().getClassLoader().getResourceAsStream(FILE_PATH)) {
             if (inputStream == null) {
-                throw new IOException("File not found: " + FILE_PATH);
+                throw new DaoException("File not found: " + FILE_PATH);
             }
             try (Stream<String> lines = new java.io.BufferedReader(
                     new java.io.InputStreamReader(inputStream, StandardCharsets.UTF_8)).lines()) {

@@ -2,8 +2,6 @@ package ehu.java.repository.impl;
 
 import ehu.java.entity.Rectangle;
 import ehu.java.repository.*;
-import ehu.java.service.RectangleService;
-
 import java.util.*;
 import java.util.stream.Collectors;
 

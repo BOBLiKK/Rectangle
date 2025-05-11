@@ -90,12 +90,10 @@ public class RectangleServiceImpl implements RectangleService {
     public boolean updateRectangleCoordinates(int rectangleId, List<Point> newCoordinates, RectangleRepositoryImpl repository) {
         RectangleIdSpecificationImpl specification = new RectangleIdSpecificationImpl(rectangleId);
         List<Rectangle> foundRectangles = repository.query(specification);
-
         if (foundRectangles.isEmpty()) {
             logger.error("Rectangle with ID " + rectangleId + " not found.");
             return false;
         }
-
         Rectangle rectangleToUpdate = foundRectangles.get(0);
 
         List<Double> distances = pointService.calculateAllDistances(newCoordinates);
